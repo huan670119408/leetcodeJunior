@@ -1,7 +1,7 @@
 package array;
 
 /**
- * Created by LiBingyi on 2019/3/24 23:32
+ * 移动0
  */
 public class Solution_8 {
 
