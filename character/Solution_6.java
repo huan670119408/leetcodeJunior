@@ -59,36 +59,49 @@ public class Solution_6 {
         int count = 0;
         int plus = 0; // 0无符号 1正号 2负号
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= 48 && chars[i] <= 57) {
+            if (chars[i] >= 49 && chars[i] <= 57 || (chars[i] == 48 && count!=0)) {
                 chars[count] = chars[i];
                 count++;
-            } else if ('+' == chars[i] && count == 0) {
+            } else if ('+' == chars[i] && count == 0 && plus == 0) {
                 plus = 1;
-
-            } else if ('-' == chars[i] && count == 0) {
+            } else if ('-' == chars[i] && count == 0 && plus == 0) {
                 plus = 2;
+            } else if(' '==chars[i] || '0' == chars[i]){
+                continue;
+            } else if(count == 0){
+                return 0;
+            } else {
+                break;
             }
         }
         if (count == 0) {
             return 0;
         }
         char[] arr = new char[count];
-//        count = count - 1;
-        for(int i = 0;i<arr.length;i++){
+        for (int i = 0; i < arr.length; i++) {
             arr[i] = chars[i];
         }
-//        long l = Long.valueOf(String.valueOf(arr));
-//        if((plus == 0 || plus == 1) &&s.compareTo("2147483647")>0) {
-//            return 2147483647;
-//        }
-//        if(plus == 2 && s.compareTo("2147483648")>0){
-//
-//        }
-        return 0;
+        if (arr.length > 10) {
+            if (plus <= 1) {
+                return 2147483647;
+            }
+            return -2147483648;
+        }
+        long l = Long.valueOf(String.valueOf(arr));
+        if ((plus <= 1) && l > 2147483647) {
+            return 2147483647;
+        }
+        if (plus == 2 && l > 2147483648l) {
+            return -2147483648;
+        }
+        if (plus <= 1) {
+            return (int)l;
+        }
+        return -(int)l;
     }
 
     public static void main(String[] args) {
-        String a = "words and 987";
+        String a = "010";
         System.out.println(myAtoi(a));
     }
 
