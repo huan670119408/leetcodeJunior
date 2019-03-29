@@ -32,36 +32,39 @@ package character;
 public class Solution_8 {
 
     public static String countAndSay(int n) {
-        String r = "1";
         if (n == 1) {
-            return r;
+            return "1";
         }
+        String r = "1";
+        StringBuilder sb = new StringBuilder();
         int i = 2;
-        while (i <= n) {
+        while (i<=n) {
+            int start = 0;
+            int count = 0;
+            int curr = 0;
             char[] a = r.toCharArray();
-            int len = a.length;
-            int j = 0;
-            StringBuilder sb = new StringBuilder();
-            while (j < len) {
-                if (a[j] == '1' && j < len - 1 && a[j + 1] == '1') {
-                    sb.append("21");
-                    j += 2;
-                } else if (a[j] == '1') {
-                    sb.append("11");
-                    j += 1;
-                } else if (a[j] == '2') {
-                    sb.append("1211");
-                    j += 2;
+            while (curr<a.length) {
+                if(a[start] == a[curr]) {
+                    count ++;
+                    curr++;
+                    if(curr == a.length){
+                        sb.append(count).append(a[start]);
+                    }
+                } else {
+                    sb.append(count).append(a[start]);
+                    start = curr;
+                    count = 0;
                 }
             }
             r = sb.toString();
+            sb.setLength(0);
             i++;
         }
-        return r;
+        return  r;
     }
 
     public static void main(String[] args) {
-        System.out.println(countAndSay(5));
+        System.out.println(countAndSay(4));
     }
 
 }
