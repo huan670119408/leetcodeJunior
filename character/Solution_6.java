@@ -57,24 +57,30 @@ public class Solution_6 {
         }
         char[] chars = str.toCharArray();
         int count = 0;
-        int plus = 0; // 0无符号 1正号 2负号
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= 49 && chars[i] <= 57 || (chars[i] == 48 && count!=0)) {
+        int plus = 0;
+        boolean flag = false;
+        for(int i = 0;i<chars.length;i++){
+            if(' ' == chars[i]&&!flag) {
+                continue;
+            }
+            if(plus == 0 &&'+'==chars[i]&&!flag){
+                plus = 1;
+                flag = true;
+            } else if(plus == 0 && '-' == chars[i]&&!flag){
+                plus = 2;
+                flag = true;
+            } else if(chars[i] >= 48 && chars[i] <= 57){
+                flag = true;
+                if(chars[i] == '0'&&count == 0) {
+                    continue;
+                }
                 chars[count] = chars[i];
                 count++;
-            } else if ('+' == chars[i] && count == 0 && plus == 0) {
-                plus = 1;
-            } else if ('-' == chars[i] && count == 0 && plus == 0) {
-                plus = 2;
-            } else if(' '==chars[i] || '0' == chars[i]){
-                continue;
-            } else if(count == 0){
-                return 0;
             } else {
                 break;
             }
         }
-        if (count == 0) {
+        if(count == 0) {
             return 0;
         }
         char[] arr = new char[count];
@@ -101,7 +107,7 @@ public class Solution_6 {
     }
 
     public static void main(String[] args) {
-        String a = "010";
+        String a = "0-1";
         System.out.println(myAtoi(a));
     }
 
