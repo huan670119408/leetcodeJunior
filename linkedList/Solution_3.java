@@ -3,7 +3,7 @@ package linkedList;
 /**
  * 反转链表
  */
-public class solution_3 {
+public class Solution_3 {
 
     public class ListNode {
         int val;

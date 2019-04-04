@@ -3,7 +3,7 @@ package linkedList;
 /**
  * 删除链表中的节点
  */
-public class solution_1 {
+public class Solution_1 {
 
     public class ListNode {
       int val;

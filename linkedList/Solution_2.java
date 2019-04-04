@@ -3,7 +3,7 @@ package linkedList;
 /**
  * 删除链表的倒数第N个节点
  */
-public class solution_2 {
+public class Solution_2 {
 
     public class ListNode {
       int val;

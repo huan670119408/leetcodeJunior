@@ -3,7 +3,7 @@ package linkedList;
 /**
  * 合并两个有序链表
  */
-public class solution_4 {
+public class Solution_4 {
 
     public class ListNode {
         int val;
