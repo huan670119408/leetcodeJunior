@@ -6,15 +6,14 @@ package test;
 public class AbAb {
 
     public static void main(String[] args) throws Exception {
-        final AbAb abab = new AbAb();
         Runnable task1 = new Runnable() {
             public void run() {
                 while (true) {
-                    synchronized (abab) {
-                        abab.notify();
+                    synchronized (AbAb.class) {
+                        AbAb.class.notify();
                         System.out.println("AAA");
                         try {
-                            abab.wait();
+                            AbAb.class.wait();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -25,11 +24,11 @@ public class AbAb {
         Runnable task2 = new Runnable() {
             public void run() {
                 while (true) {
-                    synchronized (abab) {
-                        abab.notify();
+                    synchronized (AbAb.class) {
+                        AbAb.class.notify();
                         System.out.println("BBB");
                         try {
-                            abab.wait();
+                            AbAb.class.wait();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -40,6 +39,7 @@ public class AbAb {
         Thread t1 = new Thread(task1);
         Thread t2 = new Thread(task2);
         t1.start();
+        Thread.sleep(100);
         t2.start();
     }
 
