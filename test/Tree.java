@@ -1,4 +1,4 @@
-package tree;
+package test;
 
 /**
  * Created by LiBingyi on 2019/5/25 10:29
@@ -9,11 +9,11 @@ public class Tree {
 
     private class Node {
 
-        public int val;
+        private int val;
 
-        public Node left;
+        private Node left;
 
-        public Node right;
+        private Node right;
 
         Node(int i) {
             val = i;
