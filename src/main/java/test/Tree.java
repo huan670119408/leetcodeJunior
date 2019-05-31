@@ -1,4 +1,4 @@
-package scr.main.java.test;
+package main.java.test;
 
 /**
  * Created by LiBingyi on 2019/5/25 10:29

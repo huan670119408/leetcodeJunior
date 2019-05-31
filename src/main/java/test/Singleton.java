@@ -1,5 +1,4 @@
-package scr.main.java.test;
-
+package main.java.test;
 
 public class Singleton {
 
