@@ -463,22 +463,24 @@ public class ThreadLocal<T> {
                     e.value = value;
                     return;
                 }
-                if (k == null) { //e不为null但k为null说明k作为弱引用被GC，是脏数据需要被清理，
+                if (k == null) { //e不为null但k为null说明k作为弱引用被GC，是脏数据需要被清理
+                    // i为脏数据位置，清理该位置并依据key/value合理地散列或替换到数组中，重新散列i后面的元素，并顺便清理i位置附近的其他脏索引
                     replaceStaleEntry(key, value, i);
                     return;
                 }
             }
+            // 遍历到一个数组位置为null的位置赋值
             tab[i] = new Entry(key, value);
             int sz = ++size;
+            // 调用cleanSomeSlots尝试性发现并清理脏索引，如果没有发现且脏索引当前容量超过阈值，则调用rehash
+            // rehash全量地遍历清理脏索引，然后判断容量若大于阈值的3/4，则扩容并从新散列
             if (!cleanSomeSlots(i, sz) && sz >= threshold)
                 rehash();
         }
 
 
 
-        /**
-         * Remove the entry for key.
-         */
+        // 根据key移除脏索引，调用expungeStaleEntry清理i位置的同时，清理i附近的脏索引
         private void remove(ThreadLocal<?> key) {
             Entry[] tab = table;
             int len = tab.length;
@@ -542,7 +544,8 @@ public class ThreadLocal<T> {
                     tab[staleSlot] = e;
                     // Start expunge at preceding stale entry if it exists
                     // 开始清理前面的脏实体
-                    // 如果前面向前查找的脏索引不存在，也就是slotToExpunge == staleSlot，此时slotToExpunge = i，此时位置i的实体是脏实体，需要被清理
+                    // 如果前面向前或向后查找的脏索引不存在，也就是slotToExpunge == staleSlot，此时slotToExpunge = i，此时位置i的实体是脏实体，需要被清理
+                    // slotToExpunge用来存储第一个需要被清理的脏索引位置
                     if (slotToExpunge == staleSlot)
                         slotToExpunge = i;
                     // 清理完slotToExpunge位置及其后面非空连续位置后，通过调用cleanSomeSlots尝试性清理一些其他位置的脏实体
@@ -553,16 +556,21 @@ public class ThreadLocal<T> {
                 // If we didn't find stale entry on backward scan, the
                 // first stale entry seen while scanning for key is the
                 // first still present in the run.
+                // 如果前面向前查找的脏索引不存在，也就是slotToExpunge == staleSlot,而此时位置i为脏索引，所以将i赋值给slotToExpunge
+                // slotToExpunge用来存储第一个需要被清理的脏索引位置
                 if (k == null && slotToExpunge == staleSlot)
                     slotToExpunge = i;
             }
 
             // If key not found, put new entry in stale slot
+            // 如果向后遍历非空entry都没有找到key，则直接赋值给当前staleSlot脏索引位置
             tab[staleSlot].value = null;
             tab[staleSlot] = new Entry(key, value);
 
             // If there are any other stale entries in run, expunge them
+            // 通过前面根据staleSlot向前/向后遍历，如果发现有脏索引则清理
             if (slotToExpunge != staleSlot)
+                // 清理完slotToExpunge位置及其后面非空连续位置后，通过调用cleanSomeSlots尝试性清理一些其他位置的脏实体
                 cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
         }
 
@@ -625,16 +633,15 @@ public class ThreadLocal<T> {
             return removed;
         }
 
-        /**
-         * Re-pack and/or re-size the table. First scan the entire
-         * table removing stale entries. If this doesn't sufficiently
-         * shrink the size of the table, double the table size.
-         */
+        // 调用cleanSomeSlots尝试性发现并清理脏索引，如果没有发现且脏索引当前容量超过阈值，则调用rehash
+        // rehash全量地遍历清理脏索引，然后判断容量若大于阈值的3/4，则扩容并从新散列
         private void rehash() {
+            // 全量遍历清理脏索引
             expungeStaleEntries();
-
             // Use lower threshold for doubling to avoid hysteresis
+            // 适当的扩容，以避免hash散列到数组时过多的位置冲突
             if (size >= threshold - threshold / 4)
+                // 2倍扩容并重新散列
                 resize();
         }
 
@@ -669,9 +676,7 @@ public class ThreadLocal<T> {
             table = newTab;
         }
 
-        /**
-         * Expunge all stale entries in the table.
-         */
+        // 全量遍历清理脏索引
         private void expungeStaleEntries() {
             Entry[] tab = table;
             int len = tab.length;
