@@ -176,7 +176,7 @@ public class ThreadLocal<T> {
          * entry can be expunged from table.  Such entries are referred to
          * as "stale entries" in the code that follows.
          */
-        // 此哈希映射中的条目使用其主ref字段作为键（它始终是ThreadLocal对象）继承WeakReference。
+        // 此哈希映射中的条目使用其引用字段作为键（它始终是ThreadLocal对象）继承WeakReference。
         // 注意，null键（即entry.get（）== null）表示不再引用该键，因此可以从表中删除该条目。这些条目在下面的代码中称为“旧条目”。
         // 这些“旧条目”就是脏对象，因为存在引用不会被GC，为避免内存泄露需要代码里清理，将引用置为null，那么这些对象之后就会被GC清理。
         // 实际上后面的代码很大程度上都是在描述如何清理“旧条目”的引用
@@ -286,7 +286,7 @@ public class ThreadLocal<T> {
 
             // 根据hashcode散列到数组位置
             int i = key.threadLocalHashCode & (len-1);
-            // 开放地址法处理散列冲突，线性探测找到空位置
+            // 开放地址法处理散列冲突，线性探测找到可以存放的位置
             // 遍历数组找到下一个可以存放条目的位置，这种位置包含三种情况
             // 1.条目的key已存在，直接赋值value
             // 2.条目的key位null，说明k作为弱引用被GC清理，该位置为旧数据，需要被替换
@@ -333,7 +333,7 @@ public class ThreadLocal<T> {
 
 
         private void replaceStaleEntry(ThreadLocal<?> key, Object value,
-                                       int staleSlot) {
+                                                int staleSlot) {
             Entry[] tab = table;
             int len = tab.length;
             Entry e;
@@ -366,8 +366,6 @@ public class ThreadLocal<T> {
                 // to remove or rehash all of the other entries in run.
                 // 如果我们找到键，那么我们需要将它与旧条目交换以维护哈希表顺序。
                 // 然后可以将交换后得到的旧索引位置或其上方遇到的任何其他旧索引位置发送到expungeStaleEntry以清理旧条目或重新运行运行中的所有其他条目
-
-                // 如果找到key，则替换他
                 // 如果碰到key相同的值则覆盖value
                 if (k == key) {
                     e.value = value;
@@ -412,7 +410,7 @@ public class ThreadLocal<T> {
         }
 
         // 清理staleSlot位置，以及将清理staleSlot后所有非空位置重新散列，staleSlot后所有非空位置如果有旧条目也会被清理
-        // 该方法的总结就是：清理包括staleSlot位置后面的所有旧条目并重新散列，返回staleSlot后面首个空位置条目
+        // 该方法的总结就是：清理包括staleSlot位置后面的所有旧条目并重新散列，返回staleSlot后面首个空位置
         private int expungeStaleEntry(int staleSlot) {
             Entry[] tab = table;
             int len = tab.length;
