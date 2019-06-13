@@ -26,7 +26,6 @@
 package main.java.test;
 import java.lang.ref.*;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 /**
