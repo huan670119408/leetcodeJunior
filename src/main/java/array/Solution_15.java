@@ -17,6 +17,7 @@ public class Solution_15 {
             result[k] = matrix[i][j];
 
         }
+        return null;
     }
 
 }

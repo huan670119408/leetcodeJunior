@@ -20,6 +20,7 @@ public class Solution_10 {
     public String addBinary(String a, String b) {
         char[] charsA = a.toCharArray();
         char[] charsB = b.toCharArray();
+        return null;
     }
 
 }
