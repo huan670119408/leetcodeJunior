@@ -3,9 +3,7 @@ package proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-/**
- * Created by LiBingyi on 2019/6/18 9:29
- */
+
 public class MyInvocationHandler implements InvocationHandler {
 
     private Object target;
